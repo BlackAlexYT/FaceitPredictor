@@ -1,2 +1,7 @@
 aiohttp==3.13.2
 fake_useragent==2.2.0
+numpy==2.4.1
+pandas==2.3.3
+scikit_learn==1.8.0
+torch==2.9.1+cu130
+torchinfo==1.8.0
