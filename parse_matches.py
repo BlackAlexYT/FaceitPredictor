@@ -30,9 +30,7 @@ fake_headers = {
 INPUT_CSV = "faceit_players_extracted.csv"
 OUTPUT_CSV = "dataset_ultimate_plus.csv"
 
-MAX_CONCURRENT_REQUESTS = 300  # Approximately 25 * len(proxies)
-
-semaphore_keyapi = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
+semaphore_keyapi = asyncio.Semaphore(300)  # Approximately 25 * len(proxies)
 semaphore_pubapi = asyncio.Semaphore(12)  # Approximately len(proxies)
 
 TRACKED_COUNTRIES = ['ru', 'ua', 'pl', 'kz', 'de', 'gb', 'fi', 'se', 'dk', 'fr']
@@ -80,18 +78,22 @@ def rollback_stat(current_avg, current_count, match_value):
 
 async def get_player_pre_match_stats(session, player_id, target_match_id, map_name, pre_match_elo):
     p_data = await get_html(session, f"{api_url}players/{player_id}")
-    if not p_data: return None
+    if not p_data:
+        return None
 
     cs2_info = p_data.get('games', {}).get('cs2', {})
-    if not cs2_info or cs2_info.get('region') != 'EU': return None
+    if not cs2_info or cs2_info.get('region') != 'EU':
+        return None
     country = p_data.get('country', 'other').lower()
 
     h_data = await get_html(session, f"{api_url}players/{player_id}/games/{game_id}/stats?limit=100")
-    if not h_data or 'items' not in h_data: return None
+    if not h_data or 'items' not in h_data:
+        return None
 
     items = h_data['items']
     target_idx = next((i for i, m in enumerate(items) if m['stats']['Match Id'] == target_match_id), -1)
-    if target_idx == -1: return None
+    if target_idx == -1:
+        return None
 
     m_perf = items[target_idx]['stats']
 
@@ -159,7 +161,7 @@ async def get_player_pre_match_stats(session, player_id, target_match_id, map_na
         'adr': rollback_stat(lt.get('ADR', 0), lt_m, m_perf.get('ADR', 0))
     }
 
-    map_pre = {'matches': 0, 'wr': 0.0, 'k': 0.0, 'a': 0.0, 'kd': 0.0}
+    map_pre = {'matches': 0, 'wr': 0.0, 'k': 0.0, 'a': 0.0, 'kd': 0.0, 'adr': 0.0, 'hs': 0.0, 'd': 0.0}
     for seg in s_data.get('segments', []):
         if seg['type'] == 'Map' and seg['label'].lower() in map_name.lower():
             ms = seg['stats']
@@ -323,14 +325,14 @@ async def main():
         for i in range(0, len(uids), batch_size):
             batch = uids[i: i + batch_size]
             print(
-                f"[{datetime.now().strftime('%H:%M:%S')}] Обработка батча {i // batch_size + 1}/{len(uids) // batch_size}...")
+                f"[{datetime.now().strftime('%H:%M:%S')}] Processing batch {i // batch_size + 1}/{len(uids) // batch_size}...")
 
             tasks = [process_match_leakfree(session, uid) for uid in batch]
             batch_results = await asyncio.gather(*tasks)
             results = [r for r in batch_results if r is not None]
             if results:
                 save_to_csv(results)
-                print(f"  -> Добавлено матчей в датасет: {len(results)}")
+                print(f"  -> Added matches to dataset: {len(results)}")
 
         await asyncio.sleep(3)
 
