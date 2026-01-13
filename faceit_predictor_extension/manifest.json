@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Faceit Predictor",
+  "version": "1.2",
+  "description": "Win probability for Faceit CS2 matches. Github: https://github.com/BlackAlexYT/FaceitPredictor",
+  "permissions": ["activeTab"],
+  "host_permissions": [
+    "https://fc.blalex.ru/*",
+    "*://*.faceit.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.faceit.com/*/cs2/room/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "faceit-predictor@blalex.ru"
+    }
+  }
+}

@@ -7,8 +7,8 @@ import numpy as np
 import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from parse_ongoing import process_match, TRACKED_COUNTRIES
-
 
 models_cache = {}
 
@@ -17,6 +17,7 @@ prediction_cache = {}
 cache_order = []
 
 lock = asyncio.Lock()
+
 
 def load_models():
     """Loads models once while server is starting"""
@@ -34,6 +35,7 @@ def load_models():
             }
             log_info(f"Loaded: {m_name}")
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     load_models()
@@ -41,11 +43,22 @@ async def lifespan(app: FastAPI):
     models_cache.clear()
     prediction_cache.clear()
 
+
 app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 def log_info(message: str):
     time_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{time_str}] INFO: {message}")
+
 
 def add_to_cache(match_id, data):
     """LRU CACHE"""
@@ -58,6 +71,7 @@ def add_to_cache(match_id, data):
 
     prediction_cache[match_id] = data
     cache_order.append(match_id)
+
 
 @app.get("/predict/{match_id}")
 async def get_predictions(match_id: str):
@@ -104,6 +118,7 @@ async def get_predictions(match_id: str):
 
         return final_response
 
+
 def transform_row_for_map(full_row, target_map):
     prefixes = [f"t{t}_p{p}" for t in [1, 2] for p in range(5)]
     base = ['elo', 'party_size', 'is_premium', 'is_free', 'time_diff',
@@ -121,6 +136,8 @@ def transform_row_for_map(full_row, target_map):
 
     return np.array(vector).reshape(1, -1)
 
+
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

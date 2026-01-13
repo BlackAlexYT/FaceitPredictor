@@ -1,0 +1,116 @@
+#faceit-predict-panel {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    width: 320px;
+    background: #111111;
+    border: 1px solid #282828;
+    border-radius: 10px;
+    z-index: 10000;
+    color: #eeeeee;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.8);
+}
+
+.panel-header {
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid #222;
+}
+
+.header-top {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #ff5500;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.header-teams {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.team-n {
+    font-size: 10px;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+}
+
+.panel-body { padding: 8px 0; }
+
+.map-row {
+    padding: 10px 16px;
+    position: relative;
+}
+
+.map-row.is-actual {
+    background: linear-gradient(90deg, rgba(255,85,0,0.1) 0%, rgba(0,0,0,0) 100%);
+}
+
+.row-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.pct {
+    font-size: 15px;
+    width: 60px;
+}
+
+.pct.win { color: #22c55e; font-weight: 700; }
+.pct.loss { color: #ef4444; font-weight: 700; }
+
+.pct.t1 { text-align: left; }
+.pct.t2 { text-align: right; }
+
+.map-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: #aaa;
+    letter-spacing: 0.5px;
+}
+
+.bar-container {
+    height: 4px;
+    background: #252525;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background: #ff5500;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.panel-footer {
+    padding: 10px 16px;
+    border-top: 1px solid #222;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 9px;
+    color: #444;
+}
+
+.status { color: #22c55e; }
+
+.is-actual .map-name::after {
+    content: 'LIVE';
+    margin-left: 6px;
+    font-size: 8px;
+    background: #ff5500;
+    color: white;
+    padding: 1px 4px;
+    border-radius: 2px;
+    vertical-align: middle;
+}
