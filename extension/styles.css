@@ -2,30 +2,33 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 50px;
-    height: 50px;
-    background: #ff5500;
-    border-radius: 50%;
-    cursor: pointer;
     z-index: 2147483647;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s;
-    border: 2px solid #fff;
+    cursor: pointer;
+
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+
+    width: auto;
+    height: auto;
+
+    transition: transform 0.2s ease;
+}
+
+#faceit-predictor-fab img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    display: block;
+
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
 }
 
 #faceit-predictor-fab:hover {
     transform: scale(1.1);
+    filter: drop-shadow(0 6px 12px rgba(255, 85, 0, 0.4));
 }
-
-#faceit-predictor-fab img {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
-}
-
 
 #faceit-predict-window {
     position: fixed;
@@ -53,6 +56,18 @@
     align-items: center;
     cursor: move;
     user-select: none;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-logo {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
 }
 
 .window-title {

@@ -4,9 +4,11 @@ let isWindowVisible = false;
 function createInterface() {
     if (document.getElementById('faceit-predictor-fab')) return;
 
+    const imgUrl = chrome.runtime.getURL("logo.png");
+
     const fab = document.createElement('div');
     fab.id = 'faceit-predictor-fab';
-    fab.innerHTML = `<span style="font-size: 24px;">📈</span>`;
+    fab.innerHTML = `<img src="${imgUrl}" alt="Open Predictor">`;
     fab.onclick = toggleWindow;
     document.body.appendChild(fab);
 
@@ -14,7 +16,10 @@ function createInterface() {
     windowEl.id = 'faceit-predict-window';
     windowEl.innerHTML = `
         <div class="window-header" id="fp-header">
-            <span class="window-title">PREDICTOR</span>
+            <div class="header-left">
+                <img src="${imgUrl}" class="header-logo" alt="">
+                <span class="window-title">PREDICTOR</span>
+            </div>
             <span class="minimize-btn" id="fp-minimize">−</span>
         </div>
         <div class="window-content" id="fp-content">
