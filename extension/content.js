@@ -1,6 +1,27 @@
 let currentMatchId = null;
 let isWindowVisible = false;
 
+const STORAGE_KEY = 'fp_window_settings';
+let windowSettings = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+    top: '100px',
+    left: '50%',
+    width: '320px',
+    height: 'auto',
+    transform: 'translateX(-50%)'
+};
+
+function saveWindowSettings(element) {
+    const rect = element.getBoundingClientRect();
+    windowSettings = {
+        top: rect.top + 'px',
+        left: rect.left + 'px',
+        width: element.style.width,
+        height: element.style.height,
+        transform: 'none'
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(windowSettings));
+}
+
 function createInterface() {
     if (document.getElementById('faceit-predictor-fab')) return;
 
@@ -14,22 +35,38 @@ function createInterface() {
 
     const windowEl = document.createElement('div');
     windowEl.id = 'faceit-predict-window';
+
+    windowEl.style.top = windowSettings.top;
+    windowEl.style.left = windowSettings.left;
+    windowEl.style.width = windowSettings.width;
+    windowEl.style.height = windowSettings.height;
+    if(windowSettings.transform) windowEl.style.transform = windowSettings.transform;
+
     windowEl.innerHTML = `
         <div class="window-header" id="fp-header">
             <div class="header-left">
                 <img src="${imgUrl}" class="header-logo" alt="">
                 <span class="window-title">PREDICTOR</span>
             </div>
-            <span class="minimize-btn" id="fp-minimize">−</span>
+            <!-- Добавляем класс no-drag, чтобы клик по кнопке не вызывал перетаскивание -->
+            <span class="minimize-btn no-drag" id="fp-minimize">−</span>
         </div>
         <div class="window-content" id="fp-content">
         </div>
+        <!-- Футер теперь часть контента для правильного flex-распределения -->
     `;
     document.body.appendChild(windowEl);
 
-    document.getElementById('fp-minimize').onclick = toggleWindow;
+    document.getElementById('fp-minimize').onclick = (e) => {
+        e.stopPropagation();
+        toggleWindow();
+    };
 
-    makeDraggable(document.getElementById('faceit-predict-window'), document.getElementById('fp-header'));
+    makeDraggable(windowEl);
+
+    new ResizeObserver(() => {
+        if (isWindowVisible) saveWindowSettings(windowEl);
+    }).observe(windowEl);
 
     checkCurrentPage();
 }
@@ -37,32 +74,40 @@ function createInterface() {
 function toggleWindow() {
     const win = document.getElementById('faceit-predict-window');
     isWindowVisible = !isWindowVisible;
-    win.style.display = isWindowVisible ? 'block' : 'none';
+    win.style.display = isWindowVisible ? 'flex' : 'none';
 
     if (isWindowVisible) {
         checkCurrentPage();
     }
 }
 
-function makeDraggable(elmnt, handle) {
+function makeDraggable(elmnt) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    handle.onmousedown = dragMouseDown;
+    elmnt.onmousedown = dragMouseDown;
 
     function dragMouseDown(e) {
-        e.preventDefault();
+        if (e.target.closest('.no-drag')) return;
 
         const rect = elmnt.getBoundingClientRect();
+        const isResizeZone = (e.clientX > rect.right - 20) && (e.clientY > rect.bottom - 20);
 
-        elmnt.style.left = rect.left + "px";
-        elmnt.style.top = rect.top + "px";
+        if (isResizeZone) return;
 
-        elmnt.style.transform = "none";
+        e.preventDefault();
+
+        if (elmnt.style.transform && elmnt.style.transform !== 'none') {
+            elmnt.style.left = rect.left + "px";
+            elmnt.style.top = rect.top + "px";
+            elmnt.style.transform = "none";
+        }
 
         pos3 = e.clientX;
         pos4 = e.clientY;
 
         document.onmouseup = closeDragElement;
         document.onmousemove = elementDrag;
+
+        elmnt.classList.add('is-dragging');
     }
 
     function elementDrag(e) {
@@ -79,6 +124,8 @@ function makeDraggable(elmnt, handle) {
     function closeDragElement() {
         document.onmouseup = null;
         document.onmousemove = null;
+        elmnt.classList.remove('is-dragging');
+        saveWindowSettings(elmnt);
     }
 }
 

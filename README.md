@@ -1,5 +1,7 @@
 # 🎯 Faceit Predictor for CS2
 
+![Banner Image](https://via.placeholder.com/1000x300?text=Faceit+Predictor+Banner)
+
 ![Python](https://img.shields.io/badge/Python-3.12%2B-blue)
 ![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-red)
 ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-violet)
