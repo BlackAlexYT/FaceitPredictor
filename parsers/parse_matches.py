@@ -8,7 +8,10 @@ import csv
 import time
 from datetime import datetime
 from fake_useragent import UserAgent
-from config import api_key, proxies
+try:
+    from .config import api_key, proxies
+except ImportError:
+    from config import api_key, proxies
 
 # CONFIGURATION
 game_id = "cs2"
@@ -27,8 +30,8 @@ fake_headers = {
     "Referer": "https://www.faceit.com/en/",
 }
 
-INPUT_CSV = "faceit_players_extracted.csv"
-OUTPUT_CSV = "dataset_ultimate_plus.csv"
+INPUT_CSV = "../data/faceit_players_extracted.csv"
+OUTPUT_CSV = "../data/dataset_ultimate_plus.csv"
 
 semaphore_keyapi = asyncio.Semaphore(220)  # Approximately 25 * len(proxies)
 semaphore_pubapi = asyncio.Semaphore(12)  # Approximately len(proxies)
@@ -51,6 +54,37 @@ async def get_html(session: aiohttp.ClientSession, url: str) -> dict[Any, Any] |
             try:
                 async with session.get(url, headers=cur_headers, proxy=proxies[random.randint(0, len(proxies) - 1)],
                                        timeout=20) as response:
+                    if response.status == 200:
+                        return await response.json()
+                    if response.status in [429, 1015]:
+                        await asyncio.sleep(60)
+                        print('REQUEST LIMIT', url)
+                        continue
+                    return {}
+            except Exception as e:
+                await asyncio.sleep(5)
+                print(f'EXCEPTION{e}, {url}')
+                continue
+
+
+semaphore_keyapi_without = asyncio.Semaphore(25)
+semaphore_pubapi_without = asyncio.Semaphore(2)
+
+
+async def get_html_without_proxy(session: aiohttp.ClientSession, url: str) -> dict[Any, Any] | None | Any:
+    if url.startswith('https://www.faceit.com/api'):
+        current_semaphore = semaphore_pubapi_without
+        cur_headers = fake_headers
+    else:
+        current_semaphore = semaphore_keyapi_without
+        cur_headers = headers
+
+    low, high = 0.3, 0.4
+    while True:
+        async with current_semaphore:
+            await asyncio.sleep(random.uniform(low, high))
+            try:
+                async with session.get(url, headers=cur_headers, timeout=20) as response:
                     if response.status == 200:
                         return await response.json()
                     if response.status in [429, 1015]:

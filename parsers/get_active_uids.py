@@ -7,8 +7,8 @@ from datetime import datetime
 
 api_url = "https://open.faceit.com/data/v4/"
 
-INPUT_CSV = "dataset_ultimate.csv"
-OUTPUT_CSV = "faceit_players_extracted.csv"
+INPUT_CSV = "../data/dataset_ultimate_plus.csv"
+OUTPUT_CSV = "../data/faceit_players_extracted.csv"
 
 
 async def process_match(session, match_id, unique_uids):

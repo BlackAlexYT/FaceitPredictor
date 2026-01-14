@@ -8,6 +8,9 @@ game_id = "cs2"
 api_url = "https://open.faceit.com/data/v4/"
 
 
+INPUT_FILE = "../data/ids.txt"
+OUTPUT_FILE = "../data/ids.txt"
+
 async def get_friends(session: aiohttp.ClientSession, player_id: str) -> list[str]:
     url = api_url + f'players/{player_id}'
     response_json = await get_html(session, url)
@@ -38,16 +41,16 @@ async def get_all_users(session: aiohttp.ClientSession, player_id) -> list[str]:
 
 
 async def main():
-    with open("ids.txt", "r") as f:
+    with open(INPUT_FILE, "r") as f:
         player_ids = set(line.strip() for line in f if line.strip())
 
     try:
         async with aiohttp.ClientSession() as session:
             batch_size = 50
-            for i in range(0, 20000, batch_size):
-                batch = list(player_ids)[i + 234564:i + batch_size + 234564]
+            for i in range(0, 100, batch_size):
+                batch = list(player_ids)[i:i + batch_size]
                 print(
-                    f"[{datetime.now().strftime('%H:%M:%S')}] Processing batch {i + 234564 // batch_size + 1 + 234564}... \n",
+                    f"[{datetime.now().strftime('%H:%M:%S')}] Processing batch {i // batch_size + 1}... \n",
                     end="", flush=True)
                 tasks = [get_all_users(session, player_id) for player_id in batch]
                 results = await asyncio.gather(*tasks)
@@ -59,12 +62,12 @@ async def main():
                 await asyncio.sleep(5)
 
     except RuntimeError as e:
-        with open("ids.txt", "w") as f:
+        with open(OUTPUT_FILE, "w") as f:
             for id_ in sorted(player_ids):
                 f.write(id_ + "\n")
 
         print(e.args)
-    with open("ids.txt", "w") as f:
+    with open(OUTPUT_FILE, "w") as f:
         for id_ in sorted(player_ids):
             f.write(id_ + "\n")
 

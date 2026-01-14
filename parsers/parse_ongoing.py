@@ -4,22 +4,22 @@ import os
 import csv
 import time
 from datetime import datetime
-from parse_matches import get_html
+try:
+    from .parse_matches import get_html_without_proxy
+except ImportError:
+    from parse_matches import get_html_without_proxy
 
 # CONFIGURATION
 game_id = "cs2"
 api_url = "https://open.faceit.com/data/v4/"
 
-OUTPUT_CSV = "testikkkk.csv"
-
-semaphore_keyapi = asyncio.Semaphore(220)  # Approximately 25 * len(proxies)
-semaphore_pubapi = asyncio.Semaphore(12)  # Approximately len(proxies)
+OUTPUT_CSV = "../data/ongoing.csv"
 
 TRACKED_COUNTRIES = ['ru', 'ua', 'pl', 'kz', 'de', 'gb', 'fi', 'se', 'dk', 'fr']
 
 
 async def get_player_pre_match_stats(session, player_id, pre_match_elo, match_time):
-    p_data = await get_html(session, f"{api_url}players/{player_id}")
+    p_data = await get_html_without_proxy(session, f"{api_url}players/{player_id}")
     if not p_data:
         return None
 
@@ -28,7 +28,7 @@ async def get_player_pre_match_stats(session, player_id, pre_match_elo, match_ti
         return None
     country = p_data.get('country', 'other').lower()
 
-    h_data = await get_html(session, f"{api_url}players/{player_id}/games/{game_id}/stats?limit=100")
+    h_data = await get_html_without_proxy(session, f"{api_url}players/{player_id}/games/{game_id}/stats?limit=100")
     if not h_data or 'items' not in h_data:
         return None
 
@@ -55,7 +55,7 @@ async def get_player_pre_match_stats(session, player_id, pre_match_elo, match_ti
     opp_skill_5 = 0.0
     time_diff_prev = 0
 
-    hist_data = await get_html(session, f"{api_url}players/{player_id}/history?game=cs2&limit=100")
+    hist_data = await get_html_without_proxy(session, f"{api_url}players/{player_id}/history?game=cs2&limit=100")
     if hist_data and 'items' in hist_data:
         h_items = hist_data['items']
 
@@ -84,7 +84,7 @@ async def get_player_pre_match_stats(session, player_id, pre_match_elo, match_ti
         if match_opp_5:
             opp_skill_5 = round(sum(match_opp_5) / len(match_opp_5), 2)
 
-    s_data = await get_html(session, f"{api_url}players/{player_id}/stats/{game_id}")
+    s_data = await get_html_without_proxy(session, f"{api_url}players/{player_id}/stats/{game_id}")
     if not s_data:
         return None
     lt = s_data.get('lifetime', {})
@@ -127,12 +127,12 @@ async def get_player_pre_match_stats(session, player_id, pre_match_elo, match_ti
 
 
 async def process_match(session, m_id):
-    m_data = await get_html(session, f"{api_url}matches/{m_id}")
+    m_data = await get_html_without_proxy(session, f"{api_url}matches/{m_id}")
     if not m_data or m_data.get('calculate_elo') is not True:
         return None
 
     internal_url = f'https://www.faceit.com/api/match/v2/match/{m_id}'
-    internal_data = await get_html(session, internal_url)
+    internal_data = await get_html_without_proxy(session, internal_url)
     if not internal_data or 'payload' not in internal_data:
         return None
 
