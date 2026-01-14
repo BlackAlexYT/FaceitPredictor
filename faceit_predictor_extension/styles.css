@@ -1,35 +1,97 @@
-#faceit-predict-panel {
+#faceit-predictor-fab {
     position: fixed;
-    top: 90px;
+    bottom: 20px;
     right: 20px;
+    width: 50px;
+    height: 50px;
+    background: #ff5500;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2147483647;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    border: 2px solid #fff;
+}
+
+#faceit-predictor-fab:hover {
+    transform: scale(1.1);
+}
+
+#faceit-predictor-fab img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+
+#faceit-predict-window {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 320px;
     background: #111111;
     border: 1px solid #282828;
     border-radius: 10px;
-    z-index: 10000;
+    z-index: 2147483646;
     color: #eeeeee;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.8);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9);
+    display: none;
 }
 
-.panel-header {
-    padding: 16px 16px 12px;
+.window-header {
+    padding: 10px 16px;
     border-bottom: 1px solid #222;
+    background: #1a1a1a;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    user-select: none;
 }
 
-.header-top {
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
+.window-title {
+    font-size: 12px;
+    font-weight: 700;
     color: #ff5500;
-    margin-bottom: 12px;
+}
+
+.minimize-btn {
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    color: #888;
+    padding: 0 5px;
+}
+
+.minimize-btn:hover {
+    color: #fff;
+}
+
+.window-content {
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.message-box {
+    padding: 20px;
     text-align: center;
+    font-size: 13px;
+    color: #aaa;
 }
 
 .header-teams {
     display: flex;
     justify-content: space-between;
     gap: 10px;
+    padding: 10px 16px 5px;
 }
 
 .team-n {
@@ -43,15 +105,13 @@
     max-width: 130px;
 }
 
-.panel-body { padding: 8px 0; }
-
 .map-row {
     padding: 10px 16px;
     position: relative;
 }
 
 .map-row.is-actual {
-    background: linear-gradient(90deg, rgba(255,85,0,0.1) 0%, rgba(0,0,0,0) 100%);
+    background: linear-gradient(90deg, rgba(255, 85, 0, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
 }
 
 .row-main {
@@ -66,11 +126,23 @@
     width: 60px;
 }
 
-.pct.win { color: #22c55e; font-weight: 700; }
-.pct.loss { color: #ef4444; font-weight: 700; }
+.pct.win {
+    color: #22c55e;
+    font-weight: 700;
+}
 
-.pct.t1 { text-align: left; }
-.pct.t2 { text-align: right; }
+.pct.loss {
+    color: #ef4444;
+    font-weight: 700;
+}
+
+.pct.t1 {
+    text-align: left;
+}
+
+.pct.t2 {
+    text-align: right;
+}
 
 .map-name {
     font-size: 11px;
@@ -100,9 +172,12 @@
     align-items: center;
     font-size: 9px;
     color: #444;
+    margin-top: auto;
 }
 
-.status { color: #22c55e; }
+.status {
+    color: #22c55e;
+}
 
 .is-actual .map-name::after {
     content: 'LIVE';
