@@ -34,6 +34,18 @@ The project consists of three main modules:
     *   Browser extension (Manifest V3).
     *   UI injection into the Faceit DOM tree.
 
+graph LR
+A[Faceit Matchroom] -->|Parsing| B(Chrome Extension)
+B -->|Match ID| C{Backend API}
+C -->|Fetch Stats| D[Faceit Data]
+D -->|Player Stats| E[PyTorch/ONNX Model]
+E -->|Win Probability| C
+C -->|JSON| B
+B -->|Inject UI| A
+
+    style E fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#333,stroke-width:2px
+
 ## 🚀 Installation & Setup
 
 ### 1. Backend Server
