@@ -37,20 +37,28 @@ The project consists of three main modules:
     *   ONNX model inference.
 3.  **Frontend (`/extension`)**:
     *   Browser extension (Manifest V3).
-    *   UI injection into the Faceit DOM tree.
+    *   UI injection into the Faceit.
 
 ```mermaid
 graph LR
-A[Faceit Matchroom] -->|Parsing| B(Chrome Extension)
-B -->|Match ID| C{Backend API}
-C -->|Fetch Stats| D[Faceit Data]
-D -->|Player Stats| E[PyTorch/ONNX Model]
-E -->|Win Probability| C
-C -->|JSON| B
-B -->|Inject UI| A
-
-    style E fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
+    A[Faceit Matchroom] -->|Parsing| B(Chrome Extension)
+    B -->|Match ID| C{Backend API}
+    C -->|Fetch Stats| D[Faceit Data]
+    D -->|Player Stats| E[PyTorch/ONNX Model]
+    E -->|Win Probability| C
+    C -->|JSON| B
+    B -->|Inject UI| A
+    
+    classDef default color:#fff,stroke:#fff,stroke-width:1px
+    classDef dark fill:#2b2b2b,stroke:#666,color:#fff
+    classDef blue fill:#1e3a8a,stroke:#3b82f6,color:#fff
+    classDef purple fill:#581c87,stroke:#a855f7,color:#fff
+    classDef orange fill:#7c2d12,stroke:#f97316,color:#fff
+    
+    class A,D dark
+    class B blue
+    class C orange
+    class E purple
 ```
 
 ## 🚀 Installation & Setup

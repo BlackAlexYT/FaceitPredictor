@@ -9,6 +9,11 @@
 
 **Faceit Predictor** — это интеллектуальная система для прогнозирования результатов матчей Counter-Strike 2 на платформе FACEIT в режиме реального времени. Проект использует нейросеть архитектуры DeepSets для анализа статистики игроков и выдает вероятность победы каждой команды прямо в браузере.
 
+## 🕹 Демонстрация
+
+![Extension Demo](https://via.placeholder.com/800x400?text=Place+Your+GIF+Here)
+*Виджет автоматически анализирует пики карт и составы команд.*
+
 ## ✨ Особенности
 
 *   **Real-time прогноз:** Анализ матча сразу после появления лобби (Map picking phase).
@@ -32,7 +37,30 @@
     *   Инференс ONNX моделей.
 3.  **Frontend (`/extension`)**:
     *   Расширение для браузера (Manifest V3).
-    *   Инъекция UI в DOM-дерево Faceit.
+    *   Инъекция UI в Faceit.
+
+```mermaid
+graph LR
+    A[Faceit Matchroom] -->|Parsing| B(Chrome Extension)
+    B -->|Match ID| C{Backend API}
+    C -->|Fetch Stats| D[Faceit Data]
+    D -->|Player Stats| E[PyTorch/ONNX Model]
+    E -->|Win Probability| C
+    C -->|JSON| B
+    B -->|Inject UI| A
+    
+    classDef default color:#fff,stroke:#fff,stroke-width:1px
+    classDef dark fill:#2b2b2b,stroke:#666,color:#fff
+    classDef blue fill:#1e3a8a,stroke:#3b82f6,color:#fff
+    classDef purple fill:#581c87,stroke:#a855f7,color:#fff
+    classDef orange fill:#7c2d12,stroke:#f97316,color:#fff
+    
+    class A,D dark
+    class B blue
+    class C orange
+    class E purple
+```
+
 
 ## 🚀 Установка и запуск
 
