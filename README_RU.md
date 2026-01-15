@@ -1,17 +1,18 @@
-# 🎯 Faceit Predictor for CS2
+![Banner Image](data/banner.png)
 
-![Python](https://img.shields.io/badge/Python-3.12%2B-blue)
-![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-red)
-![FastAPI](https://img.shields.io/badge/FastAPI-Backend-violet)
-![ONNX](https://img.shields.io/badge/ONNX-Inference-yellow)
-![Chrome](https://img.shields.io/badge/Chrome-Extension-chrome)
-[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/BlackAlexYT/faceit-predictor/blob/main/README.md)
+![Python](https://img.shields.io/badge/Python-3.12%2B-crimson?logo=python&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.9.1-ff6600?logo=pytorch&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.128.0-gold?logo=fastapi&logoColor=white)
+![ONNX](https://img.shields.io/badge/ONNX-1.23.2-lime?logo=onnx&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-2.3.3-00d2ff?logo=pandas&logoColor=white)
+![Chrome](https://img.shields.io/badge/Chrome-Extension-0042ff)
+[![en](https://img.shields.io/badge/lang-en-4e00ff?logo=translate)](https://github.com/BlackAlexYT/faceit-predictor/blob/main/README.md)
 
 **Faceit Predictor** — это интеллектуальная система для прогнозирования результатов матчей Counter-Strike 2 на платформе FACEIT в режиме реального времени. Проект использует нейросеть архитектуры DeepSets для анализа статистики игроков и выдает вероятность победы каждой команды прямо в браузере.
 
 ## 🕹 Демонстрация
 
-![Extension Demo](https://via.placeholder.com/800x400?text=Place+Your+GIF+Here)
+![Extension Demo](data/demo.mp4)
 *Виджет автоматически анализирует пики карт и составы команд.*
 
 ## ✨ Особенности
